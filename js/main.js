@@ -17,12 +17,12 @@ map.classList.remove('map--faded');
 const getRandomNumBetween = (min, max) => Math.round(Math.random() * (max - min) + min);
 
 const generateRandomData = (mockObj, amount) => {
-  const avatarArr = Array.from({ length: amount }, (element, index) => {
+  const avatarArr = Array.from({length: amount}, (element, index) => {
     let num = index + 1;
     if (num < 10) {
-      return `0${num}`
+      return `0${num}`;
     }
-    return num
+    return num;
   });
 
   const ads = [];
@@ -30,6 +30,7 @@ const generateRandomData = (mockObj, amount) => {
   for (let i = 0; i < amount; i++) {
     let locationX = getRandomNumBetween(25, 1175);
     let locationY = getRandomNumBetween(130, 630);
+    let roomsNum = getRandomNumBetween(1, 3);
 
     let ad = {
       author: {
@@ -44,8 +45,8 @@ const generateRandomData = (mockObj, amount) => {
         address: `${locationX}, ${locationY}`,
         price: `${getRandomNumBetween(50, 200)}$/ночь`,
         type: mockObj.type[getRandomNumBetween(0, mockObj.type.length - 1)],
-        rooms: getRandomNumBetween(1, 3),
-        guests: this.rooms < 2 ? getRandomNumBetween(1, 2) : getRandomNumBetween(3, 5),
+        rooms: roomsNum,
+        guests: roomsNum < 2 ? getRandomNumBetween(1, 2) : getRandomNumBetween(3, 5),
         checkin: mockObj.checkinout[getRandomNumBetween(0, mockObj.checkinout.length - 1)],
         checkout: mockObj.checkinout[getRandomNumBetween(0, mockObj.checkinout.length - 1)],
         features: mockObj.features.slice(0, getRandomNumBetween(1, mockObj.features.length)),
