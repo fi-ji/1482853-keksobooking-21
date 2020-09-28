@@ -15,7 +15,7 @@ const MOCK = {
   photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
 };
 
-const ACCOMODATION_TYPE = {
+const accomodationType = {
   palace: 'Дворец',
   house: 'Дом',
   bungalow: 'Бунгало',
@@ -70,7 +70,31 @@ const generateRandomData = (mockObj, amount) => {
   return ads;
 };
 
-const renderAds = (ad) => {
+const renderFeatures = (card, templateCopy) => {
+  const cardFeatures = templateCopy.querySelector('.popup__features');
+  cardFeatures.innerHTML = '';
+
+  for (let i = 0; i < card.offer.features.length; i++) {
+    let li = document.createElement('li');
+    li.classList.add('popup__feature', `popup__feature--${card.offer.features[i]}`);
+    cardFeatures.appendChild(li);
+  }
+};
+
+const renderPhotos = (card, templateCopy) => {
+  const cardPhotos = templateCopy.querySelector('.popup__photos');
+  const cardPhoto = cardPhotos.querySelector('.popup__photo');
+  cardPhoto.src = `${card.offer.photos[0]}`;
+
+  for (let i = 1; i < card.offer.photos.length; i++) {
+    let cardPhotoCopy = cardPhoto.cloneNode();
+    cardPhotoCopy.src = `${card.offer.photos[i]}`;
+
+    cardPhotos.appendChild(cardPhotoCopy);
+  }
+};
+
+const createAd = (ad) => {
   const adPin = pinTemplate.cloneNode(true);
   const adImg = adPin.querySelector('img');
 
@@ -81,39 +105,24 @@ const renderAds = (ad) => {
   return adPin;
 };
 
-const renderCards = (card) => {
+const createCard = (card) => {
   const capacityMessage = card.offer.rooms === 1 ? `${card.offer.rooms} комната для ` : `${card.offer.rooms} комнаты для `;
   const capacityMessage2 = card.offer.guests === 1 ? `${card.offer.guests} гостя` : `${card.offer.guests} гостей`;
 
   const cardCopy = cardTemplate.cloneNode(true);
-  const cardFeatures = cardCopy.querySelector('.popup__features');
-  const cardFeature = cardFeatures.querySelectorAll('.popup__feature');
-  const cardPhotos = cardCopy.querySelector('.popup__photos');
-  const cardPhoto = cardPhotos.querySelector('.popup__photo');
 
   cardCopy.querySelector('.popup__avatar').src = `${card.author.avatar}`;
   cardCopy.querySelector('.popup__avatar').alt = `${card.offer.title}`;
   cardCopy.querySelector('.popup__title').textContent = `${card.offer.title}`;
   cardCopy.querySelector('.popup__text--address').textContent = `${card.offer.address}`;
   cardCopy.querySelector('.popup__text--price').textContent = `${card.offer.price}`;
-  cardCopy.querySelector('.popup__type').textContent = `${ACCOMODATION_TYPE[card.offer.type]}`;
+  cardCopy.querySelector('.popup__type').textContent = `${accomodationType[card.offer.type]}`;
   cardCopy.querySelector('.popup__text--capacity').textContent = capacityMessage + capacityMessage2;
   cardCopy.querySelector('.popup__text--time').textContent = `Заезд после ${card.offer.checkin}, выезд до ${card.offer.checkout}`;
   cardCopy.querySelector('.popup__description').textContent = `${card.offer.description}`;
-  cardPhoto.src = `${card.offer.photos[0]}`;
 
-  for (let i = cardFeature.length - 1; i >= 0; i--) {
-    if (!card.offer.features[i]) {
-      cardFeatures.removeChild(cardFeature[i]);
-    }
-  }
-
-  for (let i = 1; i < card.offer.photos.length; i++) {
-    let cardPhotoCopy = cardPhoto.cloneNode();
-    cardPhotoCopy.src = `${card.offer.photos[i]}`;
-
-    cardPhotos.appendChild(cardPhotoCopy);
-  }
+  renderFeatures(card, cardCopy);
+  renderPhotos(card, cardCopy);
 
   return cardCopy;
 };
@@ -127,8 +136,8 @@ const fillFragment = (frag, list, func) => {
 
 const adsList = generateRandomData(MOCK, 8);
 
-fillFragment(pinFragment, adsList, renderAds);
-fillFragment(cardFragment, adsList, renderCards);
+fillFragment(pinFragment, adsList, createAd);
+fillFragment(cardFragment, adsList, createCard);
 
 mapPins.appendChild(pinFragment);
 map.insertBefore(cardFragment, mapFilters);
