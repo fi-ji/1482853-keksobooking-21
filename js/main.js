@@ -1,12 +1,24 @@
 'use strict';
 
 const map = document.querySelector('.map');
-const mapPins = map.querySelector('.map__pins');
-const mapFilters = map.querySelector('.map__filters-container');
+// const mapPins = map.querySelector('.map__pins');
+const mapPinMain = map.querySelector('.map__pin--main');
+// const mapFilters = map.querySelector('.map__filters-container');
+const adForm = document.querySelector('.ad-form');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
+const roomNumber = adForm.querySelector('#room_number');
+const aptCapacity = adForm.querySelector('#capacity');
 const pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 const pinFragment = document.createDocumentFragment();
 const cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 const cardFragment = document.createDocumentFragment();
+
+const MAIN_PIN_WIDTH = 65;
+const MAIN_PIN_HEIGHT = 65;
+const MAIN_PIN_TIP = 19;
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
+const ROOMS = [100, 1, 2, 3];
 
 const MOCK = {
   type: ['palace', 'flat', 'house', 'bungalow'],
@@ -22,7 +34,61 @@ const accomodationType = {
   flat: 'Квартира'
 };
 
-map.classList.remove('map--faded');
+// Неактивное состояние
+
+for (let item of adFormElement) {
+  item.disabled = true;
+}
+
+adForm.querySelector('input[name=address]').value = `${parseInt(mapPinMain.style.left, 10) + MAIN_PIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + MAIN_PIN_HEIGHT / 2}`;
+
+// ------------------ //
+
+const switchToActive = () => {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  for (let item of adFormElement) {
+    item.disabled = false;
+  }
+};
+
+const fillAddressInput = () => {
+  adForm.querySelector('input[name=address]').value = `${parseInt(mapPinMain.style.left, 10) + MAIN_PIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + (MAIN_PIN_HEIGHT + MAIN_PIN_TIP)}`;
+};
+
+const syncSelectBoxes = (arr) => {
+  const roomNum = parseInt(roomNumber.value, 10);
+  const capacityNum = parseInt(aptCapacity.value, 10);
+  const roomsMessage = [100, ['1, 2 или 3'], ['2 или 3'], 3];
+  const guestMessage = capacityNum === 1 ? 'гостя' : 'гостей';
+
+  if (capacityNum > arr.indexOf(roomNum)) {
+    roomNumber.setCustomValidity(`Выберите ${roomsMessage[capacityNum]} комнаты для ${capacityNum} ${guestMessage}`);
+  } else if (!capacityNum && capacityNum !== arr.indexOf(roomNum)) {
+    roomNumber.setCustomValidity(`Выберите ${roomsMessage[capacityNum]} комнат для выбора "не для гостей"`);
+  } else {
+    roomNumber.setCustomValidity('');
+  }
+  roomNumber.reportValidity();
+};
+
+mapPinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    switchToActive();
+    fillAddressInput();
+  }
+});
+
+mapPinMain.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    switchToActive();
+    fillAddressInput();
+  }
+});
+
+roomNumber.addEventListener('change', function () {
+  syncSelectBoxes(ROOMS);
+});
 
 const getRandomNumBetween = (min, max) => Math.round(Math.random() * (max - min) + min);
 
@@ -98,7 +164,7 @@ const createAd = (ad) => {
   const adPin = pinTemplate.cloneNode(true);
   const adImg = adPin.querySelector('img');
 
-  adPin.style = `left: ${ad.location.x - 25}px; top: ${ad.location.y - 70}px;`;
+  adPin.style = `left: ${ad.location.x - PIN_WIDTH / 2}px; top: ${ad.location.y - PIN_HEIGHT}px;`;
   adImg.src = `${ad.author.avatar}`;
   adImg.alt = `${ad.offer.title}`;
 
@@ -139,5 +205,5 @@ const adsList = generateRandomData(MOCK, 8);
 fillFragment(pinFragment, adsList, createAd);
 fillFragment(cardFragment, adsList, createCard);
 
-mapPins.appendChild(pinFragment);
-map.insertBefore(cardFragment, mapFilters);
+// mapPins.appendChild(pinFragment);
+// map.insertBefore(cardFragment, mapFilters);
