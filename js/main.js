@@ -1,12 +1,32 @@
 'use strict';
 
 const map = document.querySelector('.map');
-const mapPins = map.querySelector('.map__pins');
+// const mapPins = map.querySelector('.map__pins');
+const mapPinMain = map.querySelector('.map__pin--main');
 const mapFilters = map.querySelector('.map__filters-container');
+const mapFilter = mapFilters.querySelectorAll('.map__filter');
+const adForm = document.querySelector('.ad-form');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
+const roomNumber = adForm.querySelector('#room_number');
+const roomOption = roomNumber.querySelectorAll('option');
+const aptCapacity = adForm.querySelector('#capacity');
+const capacityOption = aptCapacity.querySelectorAll('option');
 const pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 const pinFragment = document.createDocumentFragment();
 const cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 const cardFragment = document.createDocumentFragment();
+
+const MAIN_PIN_WIDTH = 65;
+const MAIN_PIN_HEIGHT = 65;
+const MAIN_PIN_TIP = 19;
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
+const ROOMS = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0]
+};
 
 const MOCK = {
   type: ['palace', 'flat', 'house', 'bungalow'],
@@ -22,7 +42,89 @@ const accomodationType = {
   flat: 'Квартира'
 };
 
-map.classList.remove('map--faded');
+const setDisability = (arr, boolean) => {
+  arr.forEach((element) => {
+    element.disabled = boolean;
+    return element;
+  });
+};
+
+const fillAddressInput = (isActive) => {
+  const adFormAddress = adForm.querySelector('input[name=address]');
+  if (isActive) {
+    adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + MAIN_PIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + (MAIN_PIN_HEIGHT + MAIN_PIN_TIP)}`;
+    return adFormAddress.value;
+  }
+  adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + MAIN_PIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + MAIN_PIN_HEIGHT / 2}`;
+  return adFormAddress.value;
+};
+
+// Неактивное состояние
+
+setDisability(adFormElement, true);
+setDisability(mapFilter, true);
+fillAddressInput(false);
+
+// ------------------ //
+
+const switchToActive = () => {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+
+  setDisability(adFormElement, false);
+  setDisability(mapFilter, false);
+};
+
+const onPinMouseDown = (evt) => {
+  if (evt.button === 0) {
+    activatePage();
+  }
+};
+
+const onPinKeyDown = (evt) => {
+  if (evt.key === 'Enter') {
+    activatePage();
+  }
+};
+
+const activatePage = () => {
+  switchToActive();
+  fillAddressInput(true);
+  checkSelectedRoom();
+
+  mapPinMain.removeEventListener('mousedown', onPinMouseDown);
+  mapPinMain.removeEventListener('keydown', onPinKeyDown);
+};
+
+const checkRoomCapacity = (roomnum) => {
+  const roomCapacity = ROOMS[roomnum.value];
+  setDisability(capacityOption, true);
+
+  roomCapacity.forEach((guest) => {
+    capacityOption.forEach((option) => {
+      let optNum = parseInt(option.value, 10);
+      if (optNum === guest) {
+        option.selected = true;
+        option.disabled = false;
+      }
+    });
+  });
+};
+
+const checkSelectedRoom = () => {
+  const roomOptionArr = Array.from(roomOption);
+  checkRoomCapacity(roomOptionArr.find((element) => element.selected));
+};
+
+const onRoomsChange = (evt) => {
+  checkRoomCapacity(evt.target);
+};
+
+mapPinMain.addEventListener('mousedown', onPinMouseDown);
+mapPinMain.addEventListener('keydown', onPinKeyDown);
+roomNumber.addEventListener('change', onRoomsChange);
+
+// --------------- //
 
 const getRandomNumBetween = (min, max) => Math.round(Math.random() * (max - min) + min);
 
@@ -98,7 +200,7 @@ const createAd = (ad) => {
   const adPin = pinTemplate.cloneNode(true);
   const adImg = adPin.querySelector('img');
 
-  adPin.style = `left: ${ad.location.x - 25}px; top: ${ad.location.y - 70}px;`;
+  adPin.style = `left: ${ad.location.x - PIN_WIDTH / 2}px; top: ${ad.location.y - PIN_HEIGHT}px;`;
   adImg.src = `${ad.author.avatar}`;
   adImg.alt = `${ad.offer.title}`;
 
@@ -139,5 +241,5 @@ const adsList = generateRandomData(MOCK, 8);
 fillFragment(pinFragment, adsList, createAd);
 fillFragment(cardFragment, adsList, createCard);
 
-mapPins.appendChild(pinFragment);
-map.insertBefore(cardFragment, mapFilters);
+// mapPins.appendChild(pinFragment);
+// map.insertBefore(cardFragment, mapFilters);
