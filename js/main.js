@@ -127,13 +127,11 @@ const onTypeChange = (evt) => {
 };
 
 const checkTimeValue = (time) => {
-  let timeOptions = time.name === 'timein' ? Array.from(timeOut.querySelectorAll('option')) : Array.from(timeIn.querySelectorAll('option'));
-
-  const option = timeOptions.find((element) => {
-    return element.value === time.value;
-  });
-
-  option.selected = true;
+  if(time.name = 'timein') {
+    timeOut.value = time.value;
+  } else {
+    timeIn.value = time.value;
+  }
 };
 
 const onTimeChange = (evt) => {
