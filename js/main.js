@@ -1,26 +1,31 @@
 'use strict';
 
 const map = document.querySelector('.map');
-// const mapPins = map.querySelector('.map__pins');
+const mapPins = map.querySelector('.map__pins');
 const mapPinMain = map.querySelector('.map__pin--main');
 const mapFilters = map.querySelector('.map__filters-container');
 const mapFilter = mapFilters.querySelectorAll('.map__filter');
 const adForm = document.querySelector('.ad-form');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
+const type = adForm.querySelector('#type');
+const price = adForm.querySelector('#price');
+const timeIn = adForm.querySelector('#timein');
+const timeOut = adForm.querySelector('#timeout');
 const roomNumber = adForm.querySelector('#room_number');
-const roomOption = roomNumber.querySelectorAll('option');
 const aptCapacity = adForm.querySelector('#capacity');
 const capacityOption = aptCapacity.querySelectorAll('option');
 const pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 const pinFragment = document.createDocumentFragment();
 const cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-const cardFragment = document.createDocumentFragment();
 
-const MAIN_PIN_WIDTH = 65;
-const MAIN_PIN_HEIGHT = 65;
-const MAIN_PIN_TIP = 19;
-const PIN_WIDTH = 50;
-const PIN_HEIGHT = 70;
+const PinSize = {
+  WIDTH: 50,
+  HEIGHT: 70,
+  MAIN_WIDTH: 65,
+  MAIN_HEIGHT: 65,
+  MAIN_TIP: 19
+};
+
 const ROOMS = {
   1: [1],
   2: [1, 2],
@@ -42,6 +47,13 @@ const accomodationType = {
   flat: 'Квартира'
 };
 
+const typeMinPrice = {
+  bungalow: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
 const setDisability = (arr, boolean) => {
   arr.forEach((element) => {
     element.disabled = boolean;
@@ -52,10 +64,10 @@ const setDisability = (arr, boolean) => {
 const fillAddressInput = (isActive) => {
   const adFormAddress = adForm.querySelector('input[name=address]');
   if (isActive) {
-    adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + MAIN_PIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + (MAIN_PIN_HEIGHT + MAIN_PIN_TIP)}`;
+    adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + PinSize.MAIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + (PinSize.MAIN_HEIGHT + PinSize.MAIN_TIP)}`;
     return adFormAddress.value;
   }
-  adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + MAIN_PIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + MAIN_PIN_HEIGHT / 2}`;
+  adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + PinSize.MAIN_WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + PinSize.MAIN_HEIGHT / 2}`;
   return adFormAddress.value;
 };
 
@@ -90,10 +102,40 @@ const onPinKeyDown = (evt) => {
 const activatePage = () => {
   switchToActive();
   fillAddressInput(true);
+  checkSelectedType();
   checkSelectedRoom();
+
+  mapPins.appendChild(pinFragment);
 
   mapPinMain.removeEventListener('mousedown', onPinMouseDown);
   mapPinMain.removeEventListener('keydown', onPinKeyDown);
+};
+
+const checkTypePrice = (currentType) => {
+  const minPrice = typeMinPrice[currentType.value];
+  price.minLength = minPrice;
+  price.placeholder = minPrice;
+};
+
+const checkSelectedType = () => {
+  const typeOption = Array.from(type.querySelectorAll('option'));
+  checkTypePrice(typeOption.find((element) => element.selected));
+};
+
+const onTypeChange = (evt) => {
+  checkTypePrice(evt.target);
+};
+
+const checkTimeValue = (time) => {
+  if (time.name === 'timein') {
+    timeOut.value = time.value;
+  } else {
+    timeIn.value = time.value;
+  }
+};
+
+const onTimeChange = (evt) => {
+  checkTimeValue(evt.target);
 };
 
 const checkRoomCapacity = (roomnum) => {
@@ -112,7 +154,7 @@ const checkRoomCapacity = (roomnum) => {
 };
 
 const checkSelectedRoom = () => {
-  const roomOptionArr = Array.from(roomOption);
+  const roomOptionArr = Array.from(roomNumber.querySelectorAll('option'));
   checkRoomCapacity(roomOptionArr.find((element) => element.selected));
 };
 
@@ -122,6 +164,9 @@ const onRoomsChange = (evt) => {
 
 mapPinMain.addEventListener('mousedown', onPinMouseDown);
 mapPinMain.addEventListener('keydown', onPinKeyDown);
+type.addEventListener('change', onTypeChange);
+timeIn.addEventListener('change', onTimeChange);
+timeOut.addEventListener('change', onTimeChange);
 roomNumber.addEventListener('change', onRoomsChange);
 
 // --------------- //
@@ -196,13 +241,26 @@ const renderPhotos = (card, templateCopy) => {
   }
 };
 
+const renderCard = (ad) => {
+  const mapCard = map.querySelector('.map__card');
+  if (mapCard) {
+    mapCard.remove();
+  }
+
+  map.insertBefore(createCard(ad), mapFilters);
+};
+
 const createAd = (ad) => {
   const adPin = pinTemplate.cloneNode(true);
   const adImg = adPin.querySelector('img');
 
-  adPin.style = `left: ${ad.location.x - PIN_WIDTH / 2}px; top: ${ad.location.y - PIN_HEIGHT}px;`;
+  adPin.style = `left: ${ad.location.x - PinSize.WIDTH / 2}px; top: ${ad.location.y - PinSize.HEIGHT}px;`;
   adImg.src = `${ad.author.avatar}`;
   adImg.alt = `${ad.offer.title}`;
+
+  adPin.addEventListener('click', function () {
+    renderCard(ad);
+  });
 
   return adPin;
 };
@@ -226,6 +284,20 @@ const createCard = (card) => {
   renderFeatures(card, cardCopy);
   renderPhotos(card, cardCopy);
 
+  const popupClose = cardCopy.querySelector('.popup__close');
+
+  const onPinEscPress = (evt) => {
+    if (evt.key === 'Escape') {
+      cardCopy.remove();
+      document.removeEventListener('keydown', onPinEscPress);
+    }
+  };
+
+  popupClose.addEventListener('click', function () {
+    cardCopy.remove();
+  });
+  document.addEventListener('keydown', onPinEscPress);
+
   return cardCopy;
 };
 
@@ -239,7 +311,3 @@ const fillFragment = (frag, list, func) => {
 const adsList = generateRandomData(MOCK, 8);
 
 fillFragment(pinFragment, adsList, createAd);
-fillFragment(cardFragment, adsList, createCard);
-
-// mapPins.appendChild(pinFragment);
-// map.insertBefore(cardFragment, mapFilters);
