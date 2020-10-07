@@ -127,7 +127,7 @@ const onTypeChange = (evt) => {
 };
 
 const checkTimeValue = (time) => {
-  if(time.name = 'timein') {
+  if (time.name === 'timein') {
     timeOut.value = time.value;
   } else {
     timeIn.value = time.value;
