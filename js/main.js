@@ -10,13 +10,7 @@
   const type = adForm.querySelector('#type');
   const roomNumber = adForm.querySelector('#room_number');
 
-  const deactivatePage = () => {
-    window.util.setDisability(adFormElement, true);
-    window.util.setDisability(mapFilter, true);
-    window.form.fillAddressInput(false);
-  };
-
-  const switchToActive = () => {
+  const switchToActiveView = () => {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
 
@@ -24,20 +18,13 @@
     window.util.setDisability(mapFilter, false);
   };
 
-  const onPinMouseDown = (evt) => {
-    if (evt.button === 0) {
-      activatePage();
-    }
-  };
-
-  const onPinKeyDown = (evt) => {
-    if (evt.key === 'Enter') {
-      activatePage();
-    }
+  const deactivatePage = () => {
+    window.util.setDisability(adFormElement, true);
+    window.util.setDisability(mapFilter, true);
+    window.form.fillAddressInput(false);
   };
 
   const activatePage = () => {
-    switchToActive();
     window.form.fillAddressInput(true);
     window.form.checkTypePrice(type);
     window.form.checkRoomCapacity(roomNumber);
@@ -48,7 +35,25 @@
     mapPinMain.removeEventListener('keydown', onPinKeyDown);
   };
 
+  const onPinMouseDown = (evt) => {
+    if (evt.button === 0) {
+      switchToActiveView();
+      window.move.pinHandle(evt);
+    }
+  };
+
+  const onPinKeyDown = (evt) => {
+    if (evt.key === 'Enter') {
+      switchToActiveView();
+      activatePage();
+    }
+  };
+
   deactivatePage();
   mapPinMain.addEventListener('mousedown', onPinMouseDown);
   mapPinMain.addEventListener('keydown', onPinKeyDown);
+
+  window.main = {
+    activatePage: activatePage
+  };
 })();

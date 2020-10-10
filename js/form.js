@@ -34,10 +34,10 @@
   const fillAddressInput = (isActive) => {
     const adFormAddress = adForm.querySelector('input[name=address]');
     if (isActive) {
-      adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + MainPinSize.WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + (MainPinSize.HEIGHT + MainPinSize.TIP)}`;
+      adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2)}, ${parseInt(mapPinMain.style.top, 10) + (MainPinSize.HEIGHT + MainPinSize.TIP)}`;
       return adFormAddress.value;
     }
-    adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + MainPinSize.WIDTH / 2}, ${parseInt(mapPinMain.style.top, 10) + MainPinSize.HEIGHT / 2}`;
+    adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2)}, ${parseInt(mapPinMain.style.top, 10) + MainPinSize.HEIGHT / 2}`;
     return adFormAddress.value;
   };
 
