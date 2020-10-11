@@ -16,7 +16,7 @@
     MAX_Y: 630
   };
 
-  const pinHandle = (evt) => {
+  const movePin = (evt) => {
     let startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -26,8 +26,8 @@
       moveEvt.preventDefault();
       window.form.fillAddressInput(true);
 
-      const pinOffsetX = mapPinMain.offsetLeft;
-      const pinOffsetY = mapPinMain.offsetTop;
+      let pinOffsetX = mapPinMain.offsetLeft;
+      let pinOffsetY = mapPinMain.offsetTop;
 
       const shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -57,7 +57,6 @@
 
     const onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-      window.main.activatePage();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -68,6 +67,6 @@
   };
 
   window.move = {
-    pinHandle: pinHandle
+    movePin: movePin
   };
 })();

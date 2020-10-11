@@ -25,6 +25,7 @@
   };
 
   const activatePage = () => {
+    switchToActiveView();
     window.form.fillAddressInput(true);
     window.form.checkTypePrice(type);
     window.form.checkRoomCapacity(roomNumber);
@@ -37,23 +38,24 @@
 
   const onPinMouseDown = (evt) => {
     if (evt.button === 0) {
-      switchToActiveView();
-      window.move.pinHandle(evt);
+      activatePage();
     }
   };
 
   const onPinKeyDown = (evt) => {
     if (evt.key === 'Enter') {
-      switchToActiveView();
       activatePage();
     }
   };
 
   deactivatePage();
+
   mapPinMain.addEventListener('mousedown', onPinMouseDown);
   mapPinMain.addEventListener('keydown', onPinKeyDown);
 
-  window.main = {
-    activatePage: activatePage
-  };
+  mapPinMain.addEventListener('mousedown', (evt) => {
+    if (evt.button === 0) {
+      window.move.movePin(evt);
+    }
+  });
 })();
