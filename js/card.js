@@ -16,7 +16,8 @@
     const cardFeatures = templateCopy.querySelector('.popup__features');
 
     if (!card.offer.features.length) {
-      return cardFeatures.remove();
+      cardFeatures.remove();
+      return;
     }
 
     cardFeatures.innerHTML = '';
@@ -33,7 +34,8 @@
     const cardPhoto = cardPhotos.querySelector('.popup__photo');
 
     if (!card.offer.photos.length) {
-      return cardPhotos.remove();
+      cardPhotos.remove();
+      return;
     }
 
     cardPhoto.src = `${card.offer.photos[0]}`;
