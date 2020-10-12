@@ -10,8 +10,8 @@
 
   const getRandomNumBetween = (min, max) => Math.round(Math.random() * (max - min) + min);
 
-  const fillFragment = (frag, list, func) => {
-    for (let i = 0; i < list.length; i++) {
+  const fillFragment = (frag, list, amount, func) => {
+    for (let i = 0; i < amount; i++) {
       frag.appendChild(func(list[i]));
     }
     return frag;

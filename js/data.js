@@ -9,7 +9,7 @@
   };
 
   const generateRandomData = (mockObj, amount) => {
-    const avatarArr = Array.from({length: amount}, (element, index) => {
+    const avatarArr = Array.from({ length: amount }, (element, index) => {
       let num = index + 1;
       if (num < 10) {
         return `0${num}`;
@@ -53,8 +53,4 @@
   };
 
   const adsList = generateRandomData(MOCK, 8);
-
-  window.data = {
-    adsList: adsList
-  };
 })();

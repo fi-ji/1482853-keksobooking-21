@@ -14,6 +14,11 @@
 
   const renderFeatures = (card, templateCopy) => {
     const cardFeatures = templateCopy.querySelector('.popup__features');
+
+    if (!card.offer.features.length) {
+      return cardFeatures.remove();
+    }
+
     cardFeatures.innerHTML = '';
 
     for (let i = 0; i < card.offer.features.length; i++) {
@@ -26,6 +31,11 @@
   const renderPhotos = (card, templateCopy) => {
     const cardPhotos = templateCopy.querySelector('.popup__photos');
     const cardPhoto = cardPhotos.querySelector('.popup__photo');
+
+    if (!card.offer.photos.length) {
+      return cardPhotos.remove();
+    }
+
     cardPhoto.src = `${card.offer.photos[0]}`;
 
     for (let i = 1; i < card.offer.photos.length; i++) {
@@ -46,7 +56,7 @@
     cardCopy.querySelector('.popup__avatar').alt = `${card.offer.title}`;
     cardCopy.querySelector('.popup__title').textContent = `${card.offer.title}`;
     cardCopy.querySelector('.popup__text--address').textContent = `${card.offer.address}`;
-    cardCopy.querySelector('.popup__text--price').textContent = `${card.offer.price}`;
+    cardCopy.querySelector('.popup__text--price').textContent = `${card.offer.price}₽`;
     cardCopy.querySelector('.popup__type').textContent = `${accomodationType[card.offer.type]}`;
     cardCopy.querySelector('.popup__text--capacity').textContent = capacityMessage + capacityMessage2;
     cardCopy.querySelector('.popup__text--time').textContent = `Заезд после ${card.offer.checkin}, выезд до ${card.offer.checkout}`;
