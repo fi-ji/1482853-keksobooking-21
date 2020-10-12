@@ -10,18 +10,30 @@
   const type = adForm.querySelector('#type');
   const roomNumber = adForm.querySelector('#room_number');
 
+  const switchToActiveView = () => {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+
+    window.util.setDisability(adFormElement, false);
+    window.util.setDisability(mapFilter, false);
+  };
+
   const deactivatePage = () => {
     window.util.setDisability(adFormElement, true);
     window.util.setDisability(mapFilter, true);
     window.form.fillAddressInput(false);
   };
 
-  const switchToActive = () => {
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
+  const activatePage = () => {
+    switchToActiveView();
+    window.form.fillAddressInput(true);
+    window.form.checkTypePrice(type);
+    window.form.checkRoomCapacity(roomNumber);
 
-    window.util.setDisability(adFormElement, false);
-    window.util.setDisability(mapFilter, false);
+    mapPins.appendChild(window.map.pinFragment);
+
+    mapPinMain.removeEventListener('mousedown', onPinMouseDown);
+    mapPinMain.removeEventListener('keydown', onPinKeyDown);
   };
 
   const onPinMouseDown = (evt) => {
@@ -36,19 +48,14 @@
     }
   };
 
-  const activatePage = () => {
-    switchToActive();
-    window.form.fillAddressInput(true);
-    window.form.checkTypePrice(type);
-    window.form.checkRoomCapacity(roomNumber);
-
-    mapPins.appendChild(window.map.pinFragment);
-
-    mapPinMain.removeEventListener('mousedown', onPinMouseDown);
-    mapPinMain.removeEventListener('keydown', onPinKeyDown);
-  };
-
   deactivatePage();
+
   mapPinMain.addEventListener('mousedown', onPinMouseDown);
   mapPinMain.addEventListener('keydown', onPinKeyDown);
+
+  mapPinMain.addEventListener('mousedown', (evt) => {
+    if (evt.button === 0) {
+      window.move.movePin(evt);
+    }
+  });
 })();
