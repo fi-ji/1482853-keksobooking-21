@@ -2,12 +2,14 @@
 
 (() => {
   const map = document.querySelector('.map');
+  const mapPins = map.querySelector('.map__pins');
   const pinFragment = document.createDocumentFragment();
 
   const MAX_SIMILAR_AD_COUNT = 8;
 
   const successHandler = (adList) => {
     window.util.fillFragment(pinFragment, adList, MAX_SIMILAR_AD_COUNT, window.pin.createAd);
+    mapPins.appendChild(pinFragment);
   };
 
   const errorHandler = (errorMessage) => {
@@ -21,9 +23,9 @@
     map.insertAdjacentElement('beforeend', node);
   };
 
-  window.load.loadData(successHandler, errorHandler);
-
   window.map = {
+    successHandler: successHandler,
+    errorHandler: errorHandler,
     pinFragment: pinFragment
   };
 })();
