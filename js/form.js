@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  const mapPinMain = document.querySelector('.map__pin--main');
   const adForm = document.querySelector('.ad-form');
   const type = adForm.querySelector('#type');
   const price = adForm.querySelector('#price');
@@ -9,7 +10,8 @@
   const roomNumber = adForm.querySelector('#room_number');
   const aptCapacity = adForm.querySelector('#capacity');
   const capacityOption = aptCapacity.querySelectorAll('option');
-  const mapPinMain = document.querySelector('.map__pin--main');
+  const successMessage = document.querySelector('#success').content.querySelector('.success');
+  const errorMessage = document.querySelector('#error').content.querySelector('.error');
 
   const ROOMS = {
     1: [1],
@@ -82,10 +84,43 @@
     checkRoomCapacity(evt.target);
   };
 
+  const formReset = () => {
+    adForm.reset();
+    window.main.deactivatePage();
+    mapPinMain.addEventListener('mousedown', window.main.onPinMouseDown);
+    mapPinMain.addEventListener('keydown', window.main.onPinKeyDown);
+  };
+
+  const onEscPressSuccess = (evt) => {
+    if (evt.key === 'Escape') {
+      successMessage.remove();
+    }
+    document.removeEventListener('keydown', onEscPressSuccess);
+  };
+
+  const onEscPressError = (evt) => {
+    if (evt.key === 'Escape') {
+      errorMessage.remove();
+    }
+    document.removeEventListener('keydown', onEscPressError);
+  };
+
   type.addEventListener('change', onTypeChange);
   timeIn.addEventListener('change', onTimeChange);
   timeOut.addEventListener('change', onTimeChange);
   roomNumber.addEventListener('change', onRoomsChange);
+
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    window.load.uploadData(new FormData(adForm), () => {
+      formReset();
+      window.main.messageHandler(successMessage, onEscPressSuccess);
+    }, () => {
+      window.main.messageHandler(errorMessage, onEscPressError);
+    });
+  });
+  adForm.addEventListener('reset', formReset);
 
   window.form = {
     fillAddressInput: fillAddressInput,

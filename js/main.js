@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  const main = document.querySelector('main');
   const map = document.querySelector('.map');
   const mapPinMain = map.querySelector('.map__pin--main');
   const mapFilter = document.querySelectorAll('.map__filter');
@@ -18,6 +19,17 @@
   };
 
   const deactivatePage = () => {
+    map.querySelectorAll('.map__pin:not(.map__pin--main)').forEach((element) => {
+      element.remove();
+    });
+
+    if (!map.classList.contains('map--faded')) {
+      map.classList.add('map--faded');
+    }
+    if (!adForm.classList.contains('ad-form--disabled')) {
+      adForm.classList.add('ad-form--disabled');
+    }
+
     window.util.setDisability(adFormElement, true);
     window.util.setDisability(mapFilter, true);
     window.form.fillAddressInput(false);
@@ -48,6 +60,15 @@
     }
   };
 
+  const messageHandler = (message, escPress) => {
+    main.appendChild(message);
+    message.addEventListener('click', () => {
+      message.remove();
+      document.removeEventListener('keydown', escPress);
+    });
+    document.addEventListener('keydown', escPress);
+  };
+
   deactivatePage();
 
   mapPinMain.addEventListener('mousedown', onPinMouseDown);
@@ -58,4 +79,11 @@
       window.move.movePin(evt);
     }
   });
+
+  window.main = {
+    deactivatePage: deactivatePage,
+    onPinMouseDown: onPinMouseDown,
+    onPinKeyDown: onPinKeyDown,
+    messageHandler: messageHandler
+  };
 })();
