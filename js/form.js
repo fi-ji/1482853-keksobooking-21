@@ -10,8 +10,6 @@
   const roomNumber = adForm.querySelector('#room_number');
   const aptCapacity = adForm.querySelector('#capacity');
   const capacityOption = aptCapacity.querySelectorAll('option');
-  const successMessage = document.querySelector('#success').content.querySelector('.success');
-  const errorMessage = document.querySelector('#error').content.querySelector('.error');
 
   const ROOMS = {
     1: [1],
@@ -84,25 +82,16 @@
     checkRoomCapacity(evt.target);
   };
 
+  const onSubmit = (evt) => {
+    evt.preventDefault();
+    window.load.uploadData(new FormData(adForm), window.main.successHandler, window.main.errorHandler);
+  };
+
   const formReset = () => {
     adForm.reset();
     window.main.deactivatePage();
-    mapPinMain.addEventListener('mousedown', window.main.onPinMouseDown);
-    mapPinMain.addEventListener('keydown', window.main.onPinKeyDown);
-  };
-
-  const onEscPressSuccess = (evt) => {
-    if (evt.key === 'Escape') {
-      successMessage.remove();
-    }
-    document.removeEventListener('keydown', onEscPressSuccess);
-  };
-
-  const onEscPressError = (evt) => {
-    if (evt.key === 'Escape') {
-      errorMessage.remove();
-    }
-    document.removeEventListener('keydown', onEscPressError);
+    mapPinMain.addEventListener('mousedown', window.map.onPinMouseDown);
+    mapPinMain.addEventListener('keydown', window.map.onPinKeyDown);
   };
 
   type.addEventListener('change', onTypeChange);
@@ -110,21 +99,11 @@
   timeOut.addEventListener('change', onTimeChange);
   roomNumber.addEventListener('change', onRoomsChange);
 
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    window.load.uploadData(new FormData(adForm), () => {
-      formReset();
-      window.main.messageHandler(successMessage, onEscPressSuccess);
-    }, () => {
-      window.main.messageHandler(errorMessage, onEscPressError);
-    });
-  });
-  adForm.addEventListener('reset', formReset);
-
   window.form = {
     fillAddressInput: fillAddressInput,
     checkTypePrice: checkTypePrice,
-    checkRoomCapacity: checkRoomCapacity
+    checkRoomCapacity: checkRoomCapacity,
+    onSubmit: onSubmit,
+    formReset: formReset
   };
 })();
