@@ -9,6 +9,7 @@
   const adFormElement = adForm.querySelectorAll('.ad-form__element');
   const type = adForm.querySelector('#type');
   const roomNumber = adForm.querySelector('#room_number');
+  const adFormReset = adForm.querySelector('.ad-form__reset');
   const successMessage = document.querySelector('#success').content.querySelector('.success');
   const errorMessage = document.querySelector('#error').content.querySelector('.error');
 
@@ -33,7 +34,7 @@
     window.form.fillAddressInput(false);
 
     adForm.removeEventListener('submit', window.form.onSubmit);
-    adForm.removeEventListener('reset', window.form.formReset);
+    adFormReset.removeEventListener('click', window.form.formReset);
   };
 
   const activatePage = () => {
@@ -49,7 +50,7 @@
     mapPinMain.removeEventListener('keydown', window.map.onPinKeyDown);
 
     adForm.addEventListener('submit', window.form.onSubmit);
-    adForm.addEventListener('reset', window.form.formReset);
+    adFormReset.addEventListener('click', window.form.formReset);
   };
 
   const successHandler = () => {
