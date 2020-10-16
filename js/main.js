@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  const main = document.querySelector('main');
   const map = document.querySelector('.map');
   const mapPinMain = map.querySelector('.map__pin--main');
   const mapFilter = document.querySelectorAll('.map__filter');
@@ -8,23 +9,36 @@
   const adFormElement = adForm.querySelectorAll('.ad-form__element');
   const type = adForm.querySelector('#type');
   const roomNumber = adForm.querySelector('#room_number');
+  const adFormReset = adForm.querySelector('.ad-form__reset');
+  const successMessage = document.querySelector('#success').content.querySelector('.success');
+  const errorMessage = document.querySelector('#error').content.querySelector('.error');
 
-  const switchToActiveView = () => {
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
+  const switchToView = (toActive, disability) => {
+    if (toActive) {
+      map.classList.remove('map--faded');
+      adForm.classList.remove('ad-form--disabled');
+    } else {
+      map.classList.add('map--faded');
+      adForm.classList.add('ad-form--disabled');
+    }
 
-    window.util.setDisability(adFormElement, false);
-    window.util.setDisability(mapFilter, false);
+    window.util.setDisability(adFormElement, disability);
+    window.util.setDisability(mapFilter, disability);
   };
 
   const deactivatePage = () => {
-    window.util.setDisability(adFormElement, true);
-    window.util.setDisability(mapFilter, true);
+    switchToView(false, true);
+
+    window.pin.removePin();
+    window.map.setMainPinStartCoords();
     window.form.fillAddressInput(false);
+
+    adForm.removeEventListener('submit', window.form.onSubmit);
+    adFormReset.removeEventListener('click', window.form.formReset);
   };
 
   const activatePage = () => {
-    switchToActiveView();
+    switchToView(true, false);
 
     window.load.loadData(window.map.successHandler, window.map.errorHandler);
 
@@ -32,30 +46,52 @@
     window.form.checkTypePrice(type);
     window.form.checkRoomCapacity(roomNumber);
 
-    mapPinMain.removeEventListener('mousedown', onPinMouseDown);
-    mapPinMain.removeEventListener('keydown', onPinKeyDown);
+    mapPinMain.removeEventListener('mousedown', window.map.onPinMouseDown);
+    mapPinMain.removeEventListener('keydown', window.map.onPinKeyDown);
+
+    adForm.addEventListener('submit', window.form.onSubmit);
+    adFormReset.addEventListener('click', window.form.formReset);
   };
 
-  const onPinMouseDown = (evt) => {
-    if (evt.button === 0) {
-      activatePage();
-    }
+  const successHandler = () => {
+    window.form.formReset();
+    window.main.messageHandler(successMessage, onEscPressSuccess);
   };
 
-  const onPinKeyDown = (evt) => {
-    if (evt.key === 'Enter') {
-      activatePage();
+  const errorHandler = () => {
+    window.main.messageHandler(errorMessage, onEscPressError);
+  };
+
+  const messageHandler = (message, escPress) => {
+    main.appendChild(message);
+    message.addEventListener('click', () => {
+      message.remove();
+      document.removeEventListener('keydown', escPress);
+    });
+    document.addEventListener('keydown', escPress);
+  };
+
+  const onEscPressSuccess = (evt) => {
+    if (evt.key === 'Escape') {
+      successMessage.remove();
     }
+    document.removeEventListener('keydown', onEscPressSuccess);
+  };
+
+  const onEscPressError = (evt) => {
+    if (evt.key === 'Escape') {
+      errorMessage.remove();
+    }
+    document.removeEventListener('keydown', onEscPressError);
   };
 
   deactivatePage();
 
-  mapPinMain.addEventListener('mousedown', onPinMouseDown);
-  mapPinMain.addEventListener('keydown', onPinKeyDown);
-
-  mapPinMain.addEventListener('mousedown', (evt) => {
-    if (evt.button === 0) {
-      window.move.movePin(evt);
-    }
-  });
+  window.main = {
+    deactivatePage: deactivatePage,
+    activatePage: activatePage,
+    successHandler: successHandler,
+    errorHandler: errorHandler,
+    messageHandler: messageHandler
+  };
 })();

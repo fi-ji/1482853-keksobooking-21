@@ -1,6 +1,7 @@
 'use strict';
 
 (() => {
+  const mapPinMain = document.querySelector('.map__pin--main');
   const adForm = document.querySelector('.ad-form');
   const type = adForm.querySelector('#type');
   const price = adForm.querySelector('#price');
@@ -9,7 +10,6 @@
   const roomNumber = adForm.querySelector('#room_number');
   const aptCapacity = adForm.querySelector('#capacity');
   const capacityOption = aptCapacity.querySelectorAll('option');
-  const mapPinMain = document.querySelector('.map__pin--main');
 
   const ROOMS = {
     1: [1],
@@ -33,12 +33,10 @@
 
   const fillAddressInput = (isActive) => {
     const adFormAddress = adForm.querySelector('input[name=address]');
-    if (isActive) {
-      adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2)}, ${parseInt(mapPinMain.style.top, 10) + (MainPinSize.HEIGHT + MainPinSize.TIP)}`;
-      return adFormAddress.value;
-    }
-    adFormAddress.value = `${parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2)}, ${parseInt(mapPinMain.style.top, 10) + MainPinSize.HEIGHT / 2}`;
-    return adFormAddress.value;
+
+    adFormAddress.value = isActive
+      ? `${parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2)}, ${parseInt(mapPinMain.style.top, 10) + (MainPinSize.HEIGHT + MainPinSize.TIP)}`
+      : `${parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2)}, ${parseInt(mapPinMain.style.top, 10) + MainPinSize.HEIGHT / 2}`;
   };
 
   const checkTypePrice = (currentType) => {
@@ -82,6 +80,18 @@
     checkRoomCapacity(evt.target);
   };
 
+  const onSubmit = (evt) => {
+    evt.preventDefault();
+    window.load.uploadData(new FormData(adForm), window.main.successHandler, window.main.errorHandler);
+  };
+
+  const formReset = () => {
+    adForm.reset();
+    window.main.deactivatePage();
+    mapPinMain.addEventListener('mousedown', window.map.onPinMouseDown);
+    mapPinMain.addEventListener('keydown', window.map.onPinKeyDown);
+  };
+
   type.addEventListener('change', onTypeChange);
   timeIn.addEventListener('change', onTimeChange);
   timeOut.addEventListener('change', onTimeChange);
@@ -90,6 +100,8 @@
   window.form = {
     fillAddressInput: fillAddressInput,
     checkTypePrice: checkTypePrice,
-    checkRoomCapacity: checkRoomCapacity
+    checkRoomCapacity: checkRoomCapacity,
+    onSubmit: onSubmit,
+    formReset: formReset
   };
 })();

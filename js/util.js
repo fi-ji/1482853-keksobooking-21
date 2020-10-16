@@ -4,7 +4,6 @@
   const setDisability = (arr, boolean) => {
     arr.forEach((element) => {
       element.disabled = boolean;
-      return element;
     });
   };
 

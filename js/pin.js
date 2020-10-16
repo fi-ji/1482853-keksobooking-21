@@ -23,7 +23,14 @@
     return adPin;
   };
 
+  const removePin = () => {
+    document.querySelectorAll('.map__pin:not(.map__pin--main)').forEach((element) => {
+      element.remove();
+    });
+  };
+
   window.pin = {
-    createAd: createAd
+    createAd: createAd,
+    removePin: removePin
   };
 })();
