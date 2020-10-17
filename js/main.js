@@ -40,7 +40,7 @@
   const activatePage = () => {
     switchToView(true, false);
 
-    window.load.loadData(window.map.successHandler, window.map.errorHandler);
+    window.load.loadData(window.render.successHandler, window.render.errorHandler);
 
     window.form.fillAddressInput(true);
     window.form.checkTypePrice(type);
