@@ -93,8 +93,17 @@
     map.insertBefore(window.card.createCard(ad), mapFilters);
   };
 
+  const removeCard = () => {
+    const mapCard = map.querySelector('.map__card');
+
+    if (mapCard) {
+      mapCard.remove();
+    }
+  };
+
   window.card = {
     createCard: createCard,
-    renderCard: renderCard
+    renderCard: renderCard,
+    removeCard: removeCard
   };
 })();
