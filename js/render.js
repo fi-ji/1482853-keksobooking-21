@@ -33,10 +33,10 @@
     map.insertAdjacentElement('beforeend', node);
   };
 
-  mapFilters.addEventListener('change', () => {
+  mapFilters.addEventListener('change', window.util.debounce(() => {
     window.card.removeCard();
     renderAds(dataCopy);
-  });
+  }));
 
   window.render = {
     successHandler: successHandler,
