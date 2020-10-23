@@ -1,97 +1,95 @@
 'use strict';
 
-(() => {
-  const main = document.querySelector('main');
-  const map = document.querySelector('.map');
-  const mapPinMain = map.querySelector('.map__pin--main');
-  const mapFilter = document.querySelectorAll('.map__filter');
-  const adForm = document.querySelector('.ad-form');
-  const adFormElement = adForm.querySelectorAll('.ad-form__element');
-  const type = adForm.querySelector('#type');
-  const roomNumber = adForm.querySelector('#room_number');
-  const adFormReset = adForm.querySelector('.ad-form__reset');
-  const successMessage = document.querySelector('#success').content.querySelector('.success');
-  const errorMessage = document.querySelector('#error').content.querySelector('.error');
+const main = document.querySelector('main');
+const map = document.querySelector('.map');
+const mapPinMain = map.querySelector('.map__pin--main');
+const mapFilter = document.querySelectorAll('.map__filter');
+const adForm = document.querySelector('.ad-form');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
+const type = adForm.querySelector('#type');
+const roomNumber = adForm.querySelector('#room_number');
+const adFormReset = adForm.querySelector('.ad-form__reset');
+const successMessage = document.querySelector('#success').content.querySelector('.success');
+const errorMessage = document.querySelector('#error').content.querySelector('.error');
 
-  const switchToView = (toActive, disability) => {
-    if (toActive) {
-      map.classList.remove('map--faded');
-      adForm.classList.remove('ad-form--disabled');
-    } else {
-      map.classList.add('map--faded');
-      adForm.classList.add('ad-form--disabled');
-    }
+const switchToView = (toActive, disability) => {
+  if (toActive) {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+  } else {
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+  }
 
-    window.util.setDisability(adFormElement, disability);
-    window.util.setDisability(mapFilter, disability);
-  };
+  window.util.setDisability(adFormElement, disability);
+  window.util.setDisability(mapFilter, disability);
+};
 
-  const deactivatePage = () => {
-    switchToView(false, true);
+const deactivatePage = () => {
+  switchToView(false, true);
 
-    window.pin.removePin();
-    window.map.setMainPinStartCoords();
-    window.form.fillAddressInput(false);
+  window.pin.removePin();
+  window.map.setMainPinStartCoords();
+  window.form.fillAddressInput(false);
 
-    adForm.removeEventListener('submit', window.form.onSubmit);
-    adFormReset.removeEventListener('click', window.form.formReset);
-  };
+  adForm.removeEventListener('submit', window.form.onSubmit);
+  adFormReset.removeEventListener('click', window.form.formReset);
+};
 
-  const activatePage = () => {
-    switchToView(true, false);
+const activatePage = () => {
+  switchToView(true, false);
 
-    window.load.loadData(window.render.successHandler, window.render.errorHandler);
+  window.load.loadData(window.render.successHandler, window.render.errorHandler);
 
-    window.form.fillAddressInput(true);
-    window.form.checkTypePrice(type);
-    window.form.checkRoomCapacity(roomNumber);
+  window.form.fillAddressInput(true);
+  window.form.checkTypePrice(type);
+  window.form.checkRoomCapacity(roomNumber);
 
-    mapPinMain.removeEventListener('mousedown', window.map.onPinMouseDown);
-    mapPinMain.removeEventListener('keydown', window.map.onPinKeyDown);
+  mapPinMain.removeEventListener('mousedown', window.map.onPinMouseDown);
+  mapPinMain.removeEventListener('keydown', window.map.onPinKeyDown);
 
-    adForm.addEventListener('submit', window.form.onSubmit);
-    adFormReset.addEventListener('click', window.form.formReset);
-  };
+  adForm.addEventListener('submit', window.form.onSubmit);
+  adFormReset.addEventListener('click', window.form.formReset);
+};
 
-  const successHandler = () => {
-    window.form.formReset();
-    window.main.messageHandler(successMessage, onEscPressSuccess);
-  };
+const successHandler = () => {
+  window.form.formReset();
+  window.main.messageHandler(successMessage, onEscPressSuccess);
+};
 
-  const errorHandler = () => {
-    window.main.messageHandler(errorMessage, onEscPressError);
-  };
+const errorHandler = () => {
+  window.main.messageHandler(errorMessage, onEscPressError);
+};
 
-  const messageHandler = (message, escPress) => {
-    main.appendChild(message);
-    message.addEventListener('click', () => {
-      message.remove();
-      document.removeEventListener('keydown', escPress);
-    });
-    document.addEventListener('keydown', escPress);
-  };
+const messageHandler = (message, escPress) => {
+  main.appendChild(message);
+  message.addEventListener('click', () => {
+    message.remove();
+    document.removeEventListener('keydown', escPress);
+  });
+  document.addEventListener('keydown', escPress);
+};
 
-  const onEscPressSuccess = (evt) => {
-    if (evt.key === 'Escape') {
-      successMessage.remove();
-    }
-    document.removeEventListener('keydown', onEscPressSuccess);
-  };
+const onEscPressSuccess = (evt) => {
+  if (evt.key === 'Escape') {
+    successMessage.remove();
+  }
+  document.removeEventListener('keydown', onEscPressSuccess);
+};
 
-  const onEscPressError = (evt) => {
-    if (evt.key === 'Escape') {
-      errorMessage.remove();
-    }
-    document.removeEventListener('keydown', onEscPressError);
-  };
+const onEscPressError = (evt) => {
+  if (evt.key === 'Escape') {
+    errorMessage.remove();
+  }
+  document.removeEventListener('keydown', onEscPressError);
+};
 
-  deactivatePage();
+deactivatePage();
 
-  window.main = {
-    deactivatePage: deactivatePage,
-    activatePage: activatePage,
-    successHandler: successHandler,
-    errorHandler: errorHandler,
-    messageHandler: messageHandler
-  };
-})();
+window.main = {
+  deactivatePage: deactivatePage,
+  activatePage: activatePage,
+  successHandler: successHandler,
+  errorHandler: errorHandler,
+  messageHandler: messageHandler
+};
