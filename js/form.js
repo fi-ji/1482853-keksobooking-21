@@ -97,9 +97,9 @@ timeOut.addEventListener('change', onTimeChange);
 roomNumber.addEventListener('change', onRoomsChange);
 
 window.form = {
-  fillAddressInput: fillAddressInput,
-  checkTypePrice: checkTypePrice,
-  checkRoomCapacity: checkRoomCapacity,
-  onSubmit: onSubmit,
-  formReset: formReset
+  fillAddressInput,
+  checkTypePrice,
+  checkRoomCapacity,
+  onSubmit,
+  formReset
 };

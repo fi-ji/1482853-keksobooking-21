@@ -87,9 +87,9 @@ const onEscPressError = (evt) => {
 deactivatePage();
 
 window.main = {
-  deactivatePage: deactivatePage,
-  activatePage: activatePage,
-  successHandler: successHandler,
-  errorHandler: errorHandler,
-  messageHandler: messageHandler
+  deactivatePage,
+  activatePage,
+  successHandler,
+  errorHandler,
+  messageHandler
 };

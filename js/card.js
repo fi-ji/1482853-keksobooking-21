@@ -101,7 +101,7 @@ const removeCard = () => {
 };
 
 window.card = {
-  createCard: createCard,
-  renderCard: renderCard,
-  removeCard: removeCard
+  createCard,
+  renderCard,
+  removeCard
 };

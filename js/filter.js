@@ -67,5 +67,5 @@ const applyAllFilters = (data) => {
 };
 
 window.filter = {
-  applyAllFilters: applyAllFilters
+  applyAllFilters
 };

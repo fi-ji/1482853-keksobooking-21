@@ -1,7 +1,7 @@
 'use strict';
 
-const URL_DATA = 'https://21.javascript.pages.academy/keksobooking/data';
-const URL = 'https://21.javascript.pages.academy/keksobooking';
+const URL_GET = 'https://21.javascript.pages.academy/keksobooking/data';
+const URL_POST = 'https://21.javascript.pages.academy/keksobooking';
 const TIMEOUT_IN_MS = 10000;
 const Code = {
   SUCCESS: 200,
@@ -55,7 +55,7 @@ const loadData = (onSuccess, onError) => {
 
   eventHandler(xhr, onSuccess, onError);
 
-  xhr.open('GET', URL_DATA);
+  xhr.open('GET', URL_GET);
   xhr.send();
 };
 
@@ -65,11 +65,11 @@ const uploadData = (data, onSuccess, onError) => {
 
   eventHandler(xhr, onSuccess, onError);
 
-  xhr.open('POST', URL);
+  xhr.open('POST', URL_POST);
   xhr.send(data);
 };
 
 window.load = {
-  loadData: loadData,
-  uploadData: uploadData
+  loadData,
+  uploadData
 };

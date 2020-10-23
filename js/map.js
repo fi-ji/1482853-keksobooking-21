@@ -34,7 +34,7 @@ mapPinMain.addEventListener('mousedown', (evt) => {
 });
 
 window.map = {
-  setMainPinStartCoords: setMainPinStartCoords,
-  onPinMouseDown: onPinMouseDown,
-  onPinKeyDown: onPinKeyDown
+  setMainPinStartCoords,
+  onPinMouseDown,
+  onPinKeyDown
 };

@@ -38,6 +38,6 @@ mapFilters.addEventListener('change', window.util.debounce(() => {
 }));
 
 window.render = {
-  successHandler: successHandler,
-  errorHandler: errorHandler
+  successHandler,
+  errorHandler
 };

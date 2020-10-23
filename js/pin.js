@@ -29,6 +29,6 @@ const removePin = () => {
 };
 
 window.pin = {
-  createAd: createAd,
-  removePin: removePin
+  createAd,
+  removePin
 };

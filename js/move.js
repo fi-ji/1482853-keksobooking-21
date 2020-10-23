@@ -66,5 +66,5 @@ const movePin = (evt) => {
 };
 
 window.move = {
-  movePin: movePin
+  movePin
 };

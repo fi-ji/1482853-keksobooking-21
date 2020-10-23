@@ -33,9 +33,9 @@ const debounce = (cb) => {
 };
 
 window.util = {
-  setDisability: setDisability,
-  getRandomNumBetween: getRandomNumBetween,
-  fillFragment: fillFragment,
-  includesAll: includesAll,
-  debounce: debounce
+  setDisability,
+  getRandomNumBetween,
+  fillFragment,
+  includesAll,
+  debounce
 };
