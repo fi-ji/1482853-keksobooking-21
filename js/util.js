@@ -1,6 +1,8 @@
 'use strict';
 
 (() => {
+  const DEBOUNCE_INTERVAL = 500; // ms
+
   const setDisability = (arr, boolean) => {
     arr.forEach((element) => {
       element.disabled = boolean;
@@ -16,9 +18,26 @@
     return frag;
   };
 
+  const includesAll = (arr, fromArr) => fromArr.every((item) => arr.includes(item));
+
+  const debounce = (cb) => {
+    let lastTimeout = null;
+
+    return function (...parameters) {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb(...parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.util = {
     setDisability: setDisability,
     getRandomNumBetween: getRandomNumBetween,
-    fillFragment: fillFragment
+    fillFragment: fillFragment,
+    includesAll: includesAll,
+    debounce: debounce
   };
 })();
