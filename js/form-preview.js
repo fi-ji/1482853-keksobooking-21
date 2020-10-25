@@ -7,8 +7,18 @@ const photoContainer = adForm.querySelector('.ad-form__photo-container');
 const photoFileChooser = adForm.querySelector('.ad-form__input');
 const photoPreview = adForm.querySelector('.ad-form__photo');
 const photoFragment = document.createDocumentFragment();
+const defaultAvatar = avatarPreview.src;
 
 const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+
+const setDefaultAvatar = () => {
+  avatarPreview.src = defaultAvatar;
+};
+
+const removeUploadedPhotos = () => {
+  adForm.querySelectorAll('.ad-form__photo').forEach((element) => element.remove());
+  photoContainer.appendChild(photoPreview);
+};
 
 avatarFileChooser.addEventListener('change', () => {
   const file = avatarFileChooser.files[0];
@@ -54,3 +64,8 @@ photoFileChooser.addEventListener('change', () => {
     photoContainer.appendChild(photoFragment);
   }
 });
+
+window.formPreview = {
+  setDefaultAvatar,
+  removeUploadedPhotos
+};
