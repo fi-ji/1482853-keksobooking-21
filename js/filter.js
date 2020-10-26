@@ -43,13 +43,13 @@ const findHousingGuests = (element) => {
 
 const findHousingFeatures = (element) => {
   let checkedBoxes = housingFeatures.querySelectorAll('.map__checkbox:checked');
-  let checkedBoxesValue = [];
+  let checkedBoxesValues = [];
 
   checkedBoxes.forEach((checkbox) => {
-    checkedBoxesValue.push(checkbox.value);
+    checkedBoxesValues.push(checkbox.value);
   });
 
-  return window.util.includesAll(element.offer.features, checkedBoxesValue);
+  return window.util.includesAll(element.offer.features, checkedBoxesValues);
 };
 
 const applyAllFilters = (data) => {
