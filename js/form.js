@@ -86,7 +86,11 @@ const onSubmit = (evt) => {
 
 const formReset = () => {
   adForm.reset();
+  window.formPreview.setDefaultAvatar();
+  window.formPreview.removeUploadedPhotos();
+
   window.main.deactivatePage();
+
   mapPinMain.addEventListener('mousedown', window.map.onPinMouseDown);
   mapPinMain.addEventListener('keydown', window.map.onPinKeyDown);
 };
