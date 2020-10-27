@@ -37,7 +37,9 @@ const movePin = (evt) => {
   };
 
   const onMouseMove = (moveEvt) => {
-    if (!isMouseDown) return;
+    if (!isMouseDown) {
+      return;
+    }
 
     moveEvt.preventDefault();
     window.form.fillAddressInput(true);
